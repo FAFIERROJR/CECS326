@@ -25,17 +25,17 @@ main(){
 
 	initArrays(arrays);
 
+	int mainChoice= 0;
+	int index = 0;
+	int subChoice = 0;
 	while(true){
 		//Main menu
-		int mainChoice= 0;
 		mainChoice = getMainChoice();
 
-		int index = getIndex();
-		int subChoice = 0;
 		switch(mainChoice){
 			case 1:
+				index = getIndex();
 				//Access a pointer
-
 				if(arrays.charPtrArr[index] == NULL){
 					reInitCharPtr(arrays, index);
 				}
@@ -98,6 +98,8 @@ int getIndex(){
 			cout<< "Invalid input. Try again" << endl;
 		}
 	}while(index < 0 || index > 19);
+
+	return index;
 }
 
 void deallocAll(struct Arrays a){
@@ -112,14 +114,16 @@ int getMainChoice(){
 		printMainMenu();
 		cin >> choice;
 
-		if(choice < 0 || choice > 4){
+		if(choice < 1 || choice > 4){
 			cout<< "Invalid input. Try again" << endl;
 		}
-	}while(choice < 0 || choice > 4);
+	}while(choice < 1 || choice > 4);
+
+	return choice;
 }
 
 char getRandomUpperCaseChar(){
-	return char(65 + rand() % 13);
+	return char(rand() % 26 + 65);
 }
 
 int getSubChoice(){
@@ -128,23 +132,30 @@ int getSubChoice(){
 		printSubMenu();
 		cin >> choice;
 
-		if(choice < 0 || choice > 4){
+		if(choice < 1|| choice > 4){
 			cout<< "Invalid input. Try again" << endl;
 		}
-	}while(choice < 0 || choice > 4);
+	}while(choice < 1 || choice > 4);
+
+	return choice;
 }
 
 void initArrays(struct Arrays a){
+
+	cout << "Initializing char array..." << endl;
+
 	a.intArr[0] = 2900;
 
 	for(int i = 1; i < 20; i++){
 		a.intArr[i] = 2 * a.intArr[i - 1];
+		cout << a.intArr[i] << " ";
 	}
+	cout << endl;
 
 	for(int i = 0; i < 20; i++){
-		a.charPtrArr[i] = new char[a.intArr[i]];
+		a.charPtrArr[i] = new char[10];
 
-		for(int j = 0; j < a.intArr[i]; j++){
+		for(int j = 0; j < 10; j++){
 			a.charPtrArr[i][j] = getRandomUpperCaseChar();
 		}
 
@@ -184,7 +195,7 @@ void printSubMenu(){
 void reInitCharPtr(struct Arrays a, int index){
 	cout << "This char pointer was previously deleted. Reinitializing.." << endl;
 	a.charPtrArr[index] = new char[a.intArr[index]];
-	for(int i = 0; i < a.intArr[index]; i++){
+	for(int i = 0; i < 10; i++){
 		a.charPtrArr[index][i] = getRandomUpperCaseChar();
 	}
 }
