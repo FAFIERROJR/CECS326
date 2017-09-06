@@ -8,17 +8,17 @@ struct Arrays {
  int intArr[20];
 };
 
-void deallocAll(struct Arrays);
-void deleteChars(struct Arrays, int);
+void deallocAll(struct Arrays&);
+void deleteChars(struct Arrays&, int);
 int getIndex();
 int getMainChoice();
-void initArrays(struct Arrays);
-void listDealloc(struct Arrays);
-void printChars(struct Arrays, int);
+void initArrays(struct Arrays&);
+void listDealloc(struct Arrays&);
+void printChars(struct Arrays&, int);
 void printMainMenu();
 void printSubMenu();
 char getRandomUpperCaseChar();
-void reInitCharPtr(struct Arrays, int);
+void reInitCharPtr(struct Arrays&, int);
 
 main(){
 	struct Arrays arrays;
@@ -83,8 +83,8 @@ main(){
 	return 0;
 }
 
-void deleteChars(struct Arrays a, int index){
-	delete a.charPtrArr[index];
+void deleteChars(struct Arrays& a, int index){
+	delete [] a.charPtrArr[index];
 	a.charPtrArr[index] = NULL;
 }
 
@@ -102,7 +102,7 @@ int getIndex(){
 	return index;
 }
 
-void deallocAll(struct Arrays a){
+void deallocAll(struct Arrays& a){
 	for(int i = 0; i < 20; i++){
 		deleteChars(a, i);
 	}
@@ -140,7 +140,7 @@ int getSubChoice(){
 	return choice;
 }
 
-void initArrays(struct Arrays a){
+void initArrays(struct Arrays& a){
 
 	cout << "Initializing char array..." << endl;
 
@@ -153,18 +153,18 @@ void initArrays(struct Arrays a){
 	cout << endl;
 
 	for(int i = 0; i < 20; i++){
-		a.charPtrArr[i] = new char[10];
+		a.charPtrArr[i] = new char[a.intArr[i]];
 
-		for(int j = 0; j < 10; j++){
+		for(int j = 0; j < a.intArr[i]; j++){
 			a.charPtrArr[i][j] = getRandomUpperCaseChar();
-		}
 
+		}
 	}
 }
 
-void listDealloc(struct Arrays a){
+void listDealloc(struct Arrays& a){
 	cout << "List of deallocated char pointers (indices): " << endl;
-	for(int i = 0; i < 20; i ){
+	for(int i = 0; i < 20; i++ ){
 		if(a.charPtrArr[i] == NULL){
 			cout << i << ", ";
 		}
@@ -172,7 +172,7 @@ void listDealloc(struct Arrays a){
 	cout << endl;
 }
 
-void printChars(struct Arrays a ,int index){
+void printChars(struct Arrays& a ,int index){
 	for(int i = 0; i < 10; i ++){
 		cout << a.charPtrArr[index][i];
 	}
@@ -192,7 +192,7 @@ void printSubMenu(){
 		<< "3. Return to Main menu" << endl;
 }
 
-void reInitCharPtr(struct Arrays a, int index){
+void reInitCharPtr(struct Arrays& a, int index){
 	cout << "This char pointer was previously deleted. Reinitializing.." << endl;
 	a.charPtrArr[index] = new char[a.intArr[index]];
 	for(int i = 0; i < 10; i++){
