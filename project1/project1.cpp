@@ -153,6 +153,7 @@ void initArrays(struct Arrays& a){
 	cout << endl;
 
 	for(int i = 0; i < 20; i++){
+		//allocate according to size of int array
 		a.charPtrArr[i] = new char[a.intArr[i]];
 
 		for(int j = 0; j < a.intArr[i]; j++){
