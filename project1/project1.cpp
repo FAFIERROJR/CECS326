@@ -3,11 +3,14 @@
 
 using namespace std;
 
+
+/*Define the struct */
 struct Arrays {
  char * charPtrArr[20];
  int intArr[20];
 };
 
+/*Declare functions */
 void deallocAll(struct Arrays&);
 void deleteChars(struct Arrays&, int);
 int getIndex();
@@ -83,11 +86,13 @@ main(){
 	return 0;
 }
 
+/*deletes all chars of a pointer to char */
 void deleteChars(struct Arrays& a, int index){
 	delete [] a.charPtrArr[index];
 	a.charPtrArr[index] = NULL;
 }
 
+/*gets index to access from user*/
 int getIndex(){
 	int index = -1;
 	do{
@@ -102,12 +107,14 @@ int getIndex(){
 	return index;
 }
 
+/*deletes all pointers*/
 void deallocAll(struct Arrays& a){
 	for(int i = 0; i < 20; i++){
 		deleteChars(a, i);
 	}
 }
 
+/*gets main menu choice from user*/
 int getMainChoice(){
 	int choice = -1;
 	do{
@@ -122,10 +129,12 @@ int getMainChoice(){
 	return choice;
 }
 
+/* returns a random upper case char */
 char getRandomUpperCaseChar(){
 	return char(rand() % 26 + 65);
 }
 
+/*gets sub menu choice from user*/
 int getSubChoice(){
 	int choice = -1;
 	do{
@@ -140,6 +149,7 @@ int getSubChoice(){
 	return choice;
 }
 
+/*initializes both arrays*/
 void initArrays(struct Arrays& a){
 
 	cout << "Initializing char array..." << endl;
@@ -148,9 +158,7 @@ void initArrays(struct Arrays& a){
 
 	for(int i = 1; i < 20; i++){
 		a.intArr[i] = 2 * a.intArr[i - 1];
-		cout << a.intArr[i] << " ";
 	}
-	cout << endl;
 
 	for(int i = 0; i < 20; i++){
 		//allocate according to size of int array
@@ -163,6 +171,7 @@ void initArrays(struct Arrays& a){
 	}
 }
 
+/*lists deallocated indices*/
 void listDealloc(struct Arrays& a){
 	cout << "List of deallocated char pointers (indices): " << endl;
 	for(int i = 0; i < 20; i++ ){
@@ -173,12 +182,15 @@ void listDealloc(struct Arrays& a){
 	cout << endl;
 }
 
+/*prints first ten chars*/
 void printChars(struct Arrays& a ,int index){
 	for(int i = 0; i < 10; i ++){
 		cout << a.charPtrArr[index][i];
 	}
 	cout << endl;
 }
+
+/*prints main menu*/
 void printMainMenu(){
 	cout << "1. Access a pointer\n"
 		<< "2. List deallocated memory (index)\n"
@@ -186,13 +198,14 @@ void printMainMenu(){
 		<< "4. Exit program" << endl;
 }
 
-
+/*prints sub menu*/
 void printSubMenu(){
 	cout << "1. Print first 10 chars\n"
 		<< "2. Delete  all chars at this pointer\n"
 		<< "3. Return to Main menu" << endl;
 }
 
+/*renitializes a pointer*/
 void reInitCharPtr(struct Arrays& a, int index){
 	cout << "This char pointer was previously deleted. Reinitializing.." << endl;
 	a.charPtrArr[index] = new char[a.intArr[index]];
