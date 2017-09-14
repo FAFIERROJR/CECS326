@@ -1,0 +1,78 @@
+
+<!-- saved from url=(0050)http://web.csulb.edu/~rngo/w/326m/assignments.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body><h1>CECS 326 (Fall 2017)</h1>
+
+<b><pre><a href="http://web.csulb.edu/~rngo/w/326m/index.html">Announcements</a>          <a href="http://web.csulb.edu/~rngo/w/326m/course%20documents.html">Course Documents</a>          <font color="orange"><b>ASSIGNMENTS</b></font>
+
+</pre></b>
+
+<input type="hidden" name="mw" value="English">
+
+<span style="background-color:yellow">Unless noted otherwise, each program includes a 1-week grace period. The grace period ends on the last day of lecture.</span>
+
+
+
+
+
+<p>&nbsp;</p><p>
+<b><span style="background-color:orange">Lab problem: Due Sept 12 (15 pts)</span></b></p><p>
+<u>Process termination:</u><br>
+Often times a process runs out of control, like the program below. In such circumstance, the user may want or need to intervene and terminate the process. </p><p>
+
+Enter the following rogue program, compile, and execute as a background process in Linux:
+</p><pre>	#include &lt;cstdlib&gt;
+	#include &lt;unistd.h&gt;
+	#include &lt;time.h&gt;
+        int main () {
+	   struct timespec delay, left;
+	   delay.tv_sec = 0;
+	   delay.tv_nsec = 500000000;
+	   for (;;)
+              nanosleep(&amp;delay,&amp;left); // students should avoid this function in this class
+           exit(0);
+        }
+</pre>
+
+In your first terminal window, execute this program in the background: "./a.out&amp;"; then execute the "top" command to monitor the most demanding tasks (simulate a user's next task, while the rogue program is still running) in your first window.<p>
+
+<b>To terminate the rogue process</b>:<br> 
+Open a second terminal window and use the command "ps aux" to view the tasks (statically). This command reports the PID of each existing task, name of each task, current state of each process, among other information. Identify and record the PID of your task, its process state, memory consumption &amp; its owner to include in your write up. (Use the Internet to learn what each column label represents.) Kill the rogue task (without terminating the top program) using command "kill -9 [pid]" - use the PID found earlier &amp; omit the square brackets.</p><p>
+
+Execute the "ps aux" command again to verify that your rogue task has terminated.</p><p>
+
+Show your work to your instructor. Submit a hard copy with cover sheet to describe your work.
+
+
+</p><p>&nbsp;</p><p>
+<b><span style="background-color:orange">Programming review: Due Sept 11</span> (25 pts)</b></p><p>
+<font color="red">Optional: To test memory leak in your program, execute it on a 32-bit system. Then, delete and reallocate some large 'blocks' of integers.</font></p><p>
+
+Objectives: Review C/C++ programming, pointers, structs, arrays, and dynamic memory allocation 
+
+
+</p><p> Note on implementation: To avoid reworking the assignment, implement this program "to the letter" of the specifications.
+
+</p><p> Program specifications: For this assignment, you will 
+write a C/C++ program that exhibits a <span style="background-color:yellow">single struct with an array of 20 pointers to 'char' and an integer array with 20 elements</span> (the number of char's allocated to each pointer). These integers are initialized according to the recursive definition:
+</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+f(0)=2900 &amp; f(n+1)=2*f(n), where n is an index of the integer array for 0&lt; n &lt; 20.</p><p>
+At the start of the program, allocate memory to all pointers based on the size stored in the integer array, and initialize every char element to a random upper case letter. </p><p>
+
+Your program prints the main menu: (1) Access a pointer, (2) List deallocated memory (index), (3) Deallocate all memory, and (4) Exit program. On access: Your program prompts the user for the index of the array to manipulate. Then, present the user with these submenu items: (1) Print the first 10 char's in the chosen array, (2) Delete all the char's associated with this pointer, and (3) Return to main menu. When your user chooses to delete the char's, deallocate memory (physically). When a user accesses a pointer whose char's have been deleted, your program notifies the user of the missing char's, re-allocates memory &amp; re-initializes the char's. Remember to manage memory properly. On exit: Your program will deallocate all memory (even though the OS will automatically do it).
+</p><p>
+This assignment requires that the specifications be implemented to the letter; otherwise, you may be asked to redo it. This program does not have to be completed in Linux; however, it must execute successfully on a Linux machine in lab.
+</p><p>
+Submit a hard copy of the program listing with a cover page (name, date, course #, email addr, program description &amp; optional critique), demonstrate the working of your program on the lab Linux machine &amp; discuss the details of your implementation when necessary.
+</p><p>
+Essential Linux commands:
+</p><ol>
+<li>gedit - GUI based text editor
+</li><li>g++ - GNU C-plus-plus compiler, e.g., 'g++ prog_one.cpp'
+</li><li>./a.out - running the program
+</li><li>ls [-a|l] - listing content of the current directory
+</li><li>mkdir - create a new directory in the current working directory
+</li><li>cp - copy file
+</li><li>mv - move a file to another location or rename a file
+</li></ol>
+Information on Linux commands can be found online.
+</body></html>
