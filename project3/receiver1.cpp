@@ -17,7 +17,9 @@ using namespace std;
 int main() {
 	//declare sender existence flags, init to true
 	bool isSender997Alive = true;
-	bool isSenter251Alive = true;
+	bool isSender251Alive = true;
+
+	long mtype = 1;
 
 	// create my msgQ with key value from ftok()
 	int qid = msgget(ftok(".",'u'), IPC_EXCL|IPC_CREAT|0600);
@@ -25,7 +27,6 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char id[10];
 		char event[50];
 	};
 
@@ -34,31 +35,18 @@ int main() {
 	//set this sender's id
 	strcpy(msg.id, "receiver1");
 	//set this sender's mtype;
-	msg.mtype = 997;
+	msg.mtype = mtype;
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long) - sizeof(msg.id);
+	int size = sizeof(msg)-sizeof(long);
 
 	do{
-		if(isSender997Alive){
-			msgrcv(qid, (struct msgbuf *)&msg, size, 997, 0); // read mesg
-			cout << getpid() << ": gets message" << endl;
-			cout << "event: " << msg.event << endl;
-
-		}
-							// don't read "fake" mesg
+		msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // read mesg
 		cout << getpid() << ": gets message" << endl;
-		cout << "message: " << msg.greeting << endl;
-		
-		strcat(msg.greeting, " and Adios.");
-		cout << getpid() << ": sends reply" << endl;
-		msg.mtype = 314; // only reading mesg with type mtype = 314
-		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-		cout << getpid() << ": now exits" << endl;
+		cout << "event: " << msg.event << endl;
 
-		msgrcv (qid, (struct msgbuf *)&msg, size, -112, 0);
-		msgrcv (qid, (struct msgbuf *)&msg, size, 0, 0);
-		msgrcv (qid, (struct msgbuf *)&msg, size, 117, 0);
+		msgsnd(qid, (struct msgbuf *)&msg, size, mtype, 0);
+	}while (isSender997Alive || isSender251Alive);
 
 	//clear potential remaining 251 message
 	msgrcv(qid (struct msgbuf *) &msg), size, 

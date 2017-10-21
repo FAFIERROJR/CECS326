@@ -19,8 +19,6 @@ using namespace std;
 
 //method declarations
 int generateRandomNumber(int marker);
-bool setAliveFlag(&bool isAlive, char rcvID[10]);
-bool setRcvFlag(&bool didRcv, char rcvID[10]);
 
 int main() {
 	//declare existence flag
@@ -38,18 +36,16 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char id[10];
 		char event[50];
 	};
 
 	buf msg;
-	//set this sender's id
-	strcpy(msg.id, "sender257");
+
 	//set this sender's mtype;
-	msg.mtype = 257;
+	msg.mtype = 2;
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long) - sizeof(msg.id);
+	int size = sizeof(msg)-sizeof(long);
 
 	while(true){
 		do{
@@ -60,14 +56,17 @@ int main() {
 			// sending event msg
 			strcpy(msg.event, event);
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-			cout << "sender997: " << "event sent" << endl;
+			cout << "sender257: " << "event sent" << endl;
+
+			msgrcv(qid, (struct msgbuf *)&msg, size, 9970, 0); // reading
+			cout << "sender257" << ": ack received" << endl;
+			cout << "event recipient: " << "receiver " << (int) msg.mtype;
   
 
-			if(strcmp(msg.event, "death")){
+			if(strcmp(msg.event, "iDedNow")){
 				break;
 			}
 
-		//until both flags are flipped
 		}while(true);
 
 	}

@@ -18,10 +18,11 @@ terminates when after it sends a num < 100
 using namespace std;
 
 //method declarations
+long detMtype(bool isAlive[2], bool didRcv[2]);
 int generateRandomNumber(int marker);
 bool didAllReceive(bool isAlive[2], bool didRcv[2]);
-int setAliveFlag(bool isAlive[2], char rcvID[10]);
-int setRcvFlag(bool didRcv[2], char rcvID[10]);
+int setAliveFlag(bool isAlive[2], long mtype);
+int setRcvFlag(bool didRcv[2], long mtype);
 
 int main() {
 	//declare existence flags
@@ -30,6 +31,7 @@ int main() {
 	bool didRcv[2];
 
 	char * event;
+	long mtype;
 	long eventNum = 0;
 
 	//seed srand
@@ -41,16 +43,13 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char id[10];
 		char event[50];
 	};
 
 	buf msg;
-	//set this sender's id
-	strcpy(msg.id, "sender997");
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long) - sizeof(msg.id);
+	int size = sizeof(msg) - sizeof(long);
 
 	while(true){
 		//reset flags
@@ -61,6 +60,9 @@ int main() {
 			eventNum = generateRandomNumber(marker);
 			event = (char *) &eventNum;
 
+			mtype = detMtype(isAlive, didRcv);
+			msg.mtype = mtype;
+
 			// sending event msg
 			strcpy(msg.event, event);
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
@@ -69,14 +71,14 @@ int main() {
 			//receiving ack
 			msgrcv(qid, (struct msgbuf *)&msg, size, 9970, 0); // reading
 			cout << "sender997" << ": ack received" << endl;
-			cout << "event recipient: " << msg.id;
+			cout << "event recipient: " << "receiver " << (int) msg.mtype;
 
 			if(strcmp(msg.event, "death")){
-				setAliveFlag(isAlive, msg.id);
+				setAliveFlag(isAlive, mtype);
 			}
 
 			//flipping appropriate flag
-			setRcvFlag(didRcv, msg.id);
+			setRcvFlag(didRcv, mtype);
 
 		//until both flags are flipped
 		}while(!didAllReceive(isAlive, didRcv));
@@ -96,8 +98,13 @@ int main() {
 /*detMtype()
 determines appropriate mtype
 depending on which receiver needs to receive the message */
-long detMtype(isAlive[2], didRcv[2]){
-	if(isAlive[1] = 0)
+long detMtype(bool isAlive[2], bool didRcv[2]){
+	if(isAlive[0] && !didRcv[0]){
+		return 1;
+	}
+	else{
+		return 2;
+	}
 }
 
 /*generateRandomNumber()
@@ -129,8 +136,8 @@ bool didAllReceive(bool isAlive[2], bool didRcv[2]){
 
 /*setAliveFlag()
 sets appropriate existence flag to false */
-int setAliveFlag(bool isAlive[2], char rcvID[10]){
-	if(strcmp(rcvID, "receiver1")){
+int setAliveFlag(bool isAlive[2], long mtype){
+	if(mtype == 1){
 		isAlive[0]= true;
 	}
 	else{
@@ -140,8 +147,8 @@ int setAliveFlag(bool isAlive[2], char rcvID[10]){
 
 /*setRcvFlag()
 sets appropriate reception flag to true */
-int setRcvFlag(bool didRcv[2], char rcvID[10]){
-	if(strcmp(rcvID, "receiver1")){
+int setRcvFlag(bool didRcv[2], long mtype){
+	if(mtype == 1){
 		didRcv[0]= true;
 	}
 	else{
