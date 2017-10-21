@@ -30,8 +30,10 @@ int main() {
 	//declare ack flags
 	bool didRcv[2];
 
-	char * event;
+	//receiving mtype
 	long mtype;
+
+	char * event;
 	long eventNum = 0;
 
 	//seed srand
@@ -60,7 +62,9 @@ int main() {
 			eventNum = generateRandomNumber(marker);
 			event = (char *) &eventNum;
 
+			//determine whether to send to receiver 1 or receiver2
 			mtype = detMtype(isAlive, didRcv);
+			cout << "determined mtype"
 			msg.mtype = mtype;
 
 			// sending event msg
@@ -69,12 +73,15 @@ int main() {
 			cout << "sender997: " << "event sent" << endl;
 
 			//receiving ack
-			msgrcv(qid, (struct msgbuf *)&msg, size, 9970, 0); // reading
+			mtype = msg.mtype + 1;
+			cout << "mtype " << mtype << endl;
+			msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // reading
 			cout << "sender997" << ": ack received" << endl;
-			cout << "event recipient: " << "receiver " << (int) msg.mtype;
+			cout << "event recipient: " << "receiver " << mtype/2 << endl;
 
-			if(strcmp(msg.event, "death")){
+			if(strcmp(msg.event, "iDedNow")){
 				setAliveFlag(isAlive, mtype);
+				cout << "sender2 died" << endl;
 			}
 
 			//flipping appropriate flag
@@ -102,8 +109,8 @@ long detMtype(bool isAlive[2], bool didRcv[2]){
 	if(isAlive[0] && !didRcv[0]){
 		return 1;
 	}
-	else{
-		return 2;
+	else if(isAlive[1] && !didRcv[1]){
+		return 3;
 	}
 }
 
@@ -129,6 +136,7 @@ returns true if all existing receivers have received msg
 else returns false */
 bool didAllReceive(bool isAlive[2], bool didRcv[2]){
 	if((isAlive[0] * didRcv[0] + !isAlive[0]) && (isAlive[1] * didRcv[1] + !isAlive[1])){
+		cout << "all received" << endl;
 		return true;
 	}
 	return false;
@@ -137,18 +145,18 @@ bool didAllReceive(bool isAlive[2], bool didRcv[2]){
 /*setAliveFlag()
 sets appropriate existence flag to false */
 int setAliveFlag(bool isAlive[2], long mtype){
-	if(mtype == 1){
-		isAlive[0]= true;
+	if(mtype == 2){
+		isAlive[0]= false;
 	}
 	else{
-		isAlive[1] = true;
+		isAlive[1] = false;
 	}
 }
 
 /*setRcvFlag()
 sets appropriate reception flag to true */
 int setRcvFlag(bool didRcv[2], long mtype){
-	if(mtype == 1){
+	if(mtype == 2){
 		didRcv[0]= true;
 	}
 	else{

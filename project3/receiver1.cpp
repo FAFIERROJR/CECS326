@@ -14,11 +14,16 @@ terminates when both senders have terminated
 #include <cstdlib>
 using namespace std;
 
+//method declarations
+bool areAllDead(bool isSender997Alive, bool isSender251Alive, bool isRcv2Alive);
+
 int main() {
 	//declare sender existence flags, init to true
 	bool isSender997Alive = true;
 	bool isSender251Alive = true;
+	bool isRcv2Alive = true;
 
+	//receiving mtype
 	long mtype = 1;
 
 	// create my msgQ with key value from ftok()
@@ -32,26 +37,44 @@ int main() {
 
 
 	buf msg;
-	//set this sender's id
-	strcpy(msg.id, "receiver1");
-	//set this sender's mtype;
-	msg.mtype = mtype;
 
 	//set msg size
 	int size = sizeof(msg)-sizeof(long);
 
 	do{
+		
 		msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // read mesg
 		cout << getpid() << ": gets message" << endl;
 		cout << "event: " << msg.event << endl;
 
-		msgsnd(qid, (struct msgbuf *)&msg, size, mtype, 0);
+		if(atoi(msg.event) < 100){
+			isSender997Alive = false;
+		}
+
+		if(strcmp(msg.event, "iDedNow")){
+			isRcv2Alive = false;
+		}
+
+		if(areAllDead(isSender997Alive, isSender251Alive, isRcv2Alive)){
+			break;
+		}
+
+		msg.mtype = 2;
+		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 	}while (isSender997Alive || isSender251Alive);
 
-	//clear potential remaining 251 message
-	msgrcv(qid (struct msgbuf *) &msg), size, 
 	// now safe to delete message queue
 	msgctl (qid, IPC_RMID, NULL);
 
 	exit(0);
+}
+
+/* areAllDead()
+returns true if both senders and receiver 2 are terminated */
+bool areAllDead(bool isSender997Alive, bool isSender251Alive, bool isRcv2Alive){
+	if(!(isSender997Alive || isSender251Alive || isRcv2Alive)){
+		cout << "all others have died" << endl;
+		return true;
+	}
+	return false;
 }

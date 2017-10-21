@@ -27,6 +27,9 @@ int main() {
 	char * event;
 	long eventNum = 0;
 
+	//receiving mtype
+	long mtype = 4;
+
 	//seed srand
 	srand(time(NULL));
 	int marker = 257;
@@ -41,9 +44,6 @@ int main() {
 
 	buf msg;
 
-	//set this sender's mtype;
-	msg.mtype = 2;
-
 	//set msg size
 	int size = sizeof(msg)-sizeof(long);
 
@@ -54,13 +54,13 @@ int main() {
 			event = (char *) &eventNum;
 
 			// sending event msg
+			msg.mtype = 3;
 			strcpy(msg.event, event);
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 			cout << "sender257: " << "event sent" << endl;
 
-			msgrcv(qid, (struct msgbuf *)&msg, size, 9970, 0); // reading
-			cout << "sender257" << ": ack received" << endl;
-			cout << "event recipient: " << "receiver " << (int) msg.mtype;
+			//checking existence
+			msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // reading
   
 
 			if(strcmp(msg.event, "iDedNow")){
