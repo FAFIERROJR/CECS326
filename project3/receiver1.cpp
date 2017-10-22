@@ -32,7 +32,7 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char event[50];
+		long event;
 	};
 
 
@@ -47,11 +47,11 @@ int main() {
 		cout << getpid() << ": gets message" << endl;
 		cout << "event: " << msg.event << endl;
 
-		if(atoi(msg.event) < 100){
+		if(msg.event < 100){
 			isSender997Alive = false;
 		}
 
-		if(strcmp(msg.event, "iDedNow")){
+		if(msg.event == -2){
 			isRcv2Alive = false;
 		}
 

@@ -19,7 +19,7 @@ using namespace std;
 
 //method declarations
 long detMtype(bool isAlive[2], bool didRcv[2]);
-int generateRandomNumber(int marker);
+long generateRandomNumber(int marker);
 bool didAllReceive(bool isAlive[2], bool didRcv[2]);
 int setAliveFlag(bool isAlive[2], long mtype);
 int setRcvFlag(bool didRcv[2], long mtype);
@@ -45,7 +45,7 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char event[50];
+		long event;
 	};
 
 	buf msg;
@@ -60,15 +60,14 @@ int main() {
 		do{
 		
 			eventNum = generateRandomNumber(marker);
-			event = (char *) &eventNum;
 
 			//determine whether to send to receiver 1 or receiver2
 			mtype = detMtype(isAlive, didRcv);
-			cout << "determined mtype"
+			cout << "determined mtype " << mtype << endl;
 			msg.mtype = mtype;
 
 			// sending event msg
-			strcpy(msg.event, event);
+			msg.event = eventNum;
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 			cout << "sender997: " << "event sent" << endl;
 
@@ -79,7 +78,7 @@ int main() {
 			cout << "sender997" << ": ack received" << endl;
 			cout << "event recipient: " << "receiver " << mtype/2 << endl;
 
-			if(strcmp(msg.event, "iDedNow")){
+			if(msg.event == -2){
 				setAliveFlag(isAlive, mtype);
 				cout << "sender2 died" << endl;
 			}
@@ -117,7 +116,7 @@ long detMtype(bool isAlive[2], bool didRcv[2]){
 /*generateRandomNumber()
 generate random number until divisible by marker
 or exit condition */
-int generateRandomNumber(int marker){
+long generateRandomNumber(int marker){
 	long event;
 	while(event % marker != 0){
 		event = rand();

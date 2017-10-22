@@ -29,7 +29,7 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char event[50];
+		long event;
 	};
 
 
@@ -41,17 +41,17 @@ int main() {
 	do{
 		msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // read mesg
 		cout << getpid() << ": gets message" << endl;
-		cout << "event: " << msg.event << endl;
+		cout << "event: " << msg.event<< endl;
 		msgCount++;
 
-		if(atoi(msg.event) < 100){
+		if(msg.event < 100){
 			isSender997Alive = false;
 		}
 
 
 		if((isSender997Alive && (msgCount == 4999)) || msgCount == 5000){
 			cout << "I'm dying" << endl;
-			strcpy(msg.event, "iDedNow");
+			msg.event = -2;
 		}
 
 		msg.mtype = 4;
@@ -61,7 +61,7 @@ int main() {
 
 	//inform rcv1 of impending death
 	msg.mtype = 4;
-	strcpy(msg.event, "iDedNow");
+	msg.event = -2;
 	msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 
 	cout << "iDedNow" << endl;

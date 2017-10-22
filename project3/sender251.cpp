@@ -18,7 +18,7 @@ terminates when after it sends a num < 100
 using namespace std;
 
 //method declarations
-int generateRandomNumber(int marker);
+long generateRandomNumber(int marker);
 
 int main() {
 	//declare existence flag
@@ -39,7 +39,7 @@ int main() {
 	// declare my message buffer
 	struct buf {
 		long mtype; 
-		char event[50];
+		long event;
 	};
 
 	buf msg;
@@ -58,7 +58,7 @@ int main() {
 
 			// sending event msg
 			msg.mtype = 1;
-			strcpy(msg.event, event);
+			msg.event = eventNum;
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 			cout << "sender251: " << "event sent" << endl;
 
@@ -78,7 +78,7 @@ int main() {
 /*generateRandomNumber()
 generate random number until divisible by marker
 or exit condition */
-int generateRandomNumber(int marker){
+long generateRandomNumber(int marker){
 	long event;
 	while(event % marker != 0){
 		event = rand();
