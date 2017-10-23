@@ -15,6 +15,7 @@ terminates when after it sends a num < 100
 #include <cstdlib>
 #include <ctime>
 #include <cstdlib>
+#include "msgbuf.h"
 using namespace std;
 
 //method declarations
@@ -30,7 +31,6 @@ int main() {
 	//declare ack flags
 	bool didRcv[2];
 
-	//receiving mtype
 	long mtype;
 
 	char * event;
@@ -41,12 +41,6 @@ int main() {
 	int marker = 997;
 
 	int qid = msgget(ftok(".",'u'), 0);
-
-	// declare my message buffer
-	struct buf {
-		long mtype; 
-		long event;
-	};
 
 	buf msg;
 
@@ -147,7 +141,7 @@ int setAliveFlag(bool isAlive[2], long mtype){
 	if(mtype == 2){
 		isAlive[0]= false;
 	}
-	else{
+	else if (mtype == 4){
 		isAlive[1] = false;
 	}
 }

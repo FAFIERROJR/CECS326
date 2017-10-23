@@ -1,5 +1,5 @@
 /* 
-sender997.cpp
+sender251.cpp
 This is the sender with marker values divisible by 997
 must receive ack
 terminates when after it sends a num < 100
@@ -15,6 +15,8 @@ terminates when after it sends a num < 100
 #include <cstdlib>
 #include <ctime>
 #include <cstdlib>
+#include "get_info.h"
+#include "msgbuf.h"
 using namespace std;
 
 //method declarations
@@ -28,7 +30,8 @@ int main() {
 	long eventNum = 0;
 
 	//receiving mtype
-	long mtype = 2;
+	long sendMtype = 1;
+	long recMtype = 2;
 
 	//seed srand
 	srand(time(NULL));
@@ -36,38 +39,29 @@ int main() {
 
 	int qid = msgget(ftok(".",'u'), 0);
 
-	// declare my message buffer
-	struct buf {
-		long mtype; 
-		long event;
-	};
-
 	buf msg;
-
-	//set this sender's mtype;
-	msg.mtype = mtype;
 
 	//set msg size
 	int size = sizeof(msg)-sizeof(long);
 
+	//send death signal
+	msg.mtype = 1;
+	msg.event = -1;
+	get_info(qid, (struct msgbuf *)&msg, size, 0);
+
 	while(true){
-		do{
 		
-			eventNum = generateRandomNumber(marker);
-			event = (char *) &eventNum;
+		eventNum = generateRandomNumber(marker);
+		event = (char *) &eventNum;
 
-			// sending event msg
-			msg.mtype = 1;
-			msg.event = eventNum;
-			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-			cout << "sender251: " << "event sent" << endl;
+		// sending event msg
+		msg.mtype = sendMtype;
+		msg.event = eventNum;
+		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+		cout << "sender251: " << "event sent" << endl;
 
-			//checking existence
-			msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // reading
-
- 
-		}while(true);
-
+		//checking existence
+		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // reading
 	}
 
 	cout << getpid() << ": now exits" << endl;

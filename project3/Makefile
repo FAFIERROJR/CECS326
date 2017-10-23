@@ -6,7 +6,7 @@ build: $(SRC)
 	g++ receiver2.cpp -o receiver2.exe
 	g++ sender997.cpp -o sender997.exe
 	g++ sender257.cpp -o sender257.exe
-	g++ sender251.cpp -o sender251.exe
+	g++ sender251.cpp linuxsignal.cpp -o sender251.exe
 
 clean:
 	rm -f $(EXE)
