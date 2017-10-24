@@ -14,7 +14,7 @@ long gmtype;
 
 void sig_handler(int signo)
 {
-	if (signo == SIGHUP) {
+	if (signo == SIGUSR1) {
 		gmbuf->mtype = gmtype;
 		msgsnd(gqid,gmbuf, gsize, 0);
 		free (gmbuf);
@@ -22,7 +22,7 @@ void sig_handler(int signo)
 	}
 }
 void get_info(int qid, msgbuf *mbuf, int size, long mtype) {
-	signal(SIGHUP, sig_handler);
+	signal(SIGUSR1, sig_handler);
 	gqid = qid;
 	gsize = size;
 	gmtype = mtype;

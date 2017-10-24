@@ -14,7 +14,7 @@ terminates when after it sends a num < 100
 #include <sys/wait.h>
 #include <cstdlib>
 #include <ctime>
-#include <cstdlib>
+#include <cstdio>
 #include "msgbuf.h"
 using namespace std;
 
@@ -25,7 +25,6 @@ int main() {
 	//declare existence flag
 	bool isAlive;
 
-	char * event;
 	long eventNum = 0;
 
 	//set mtypes
@@ -45,11 +44,10 @@ int main() {
 	while(true){
 		
 		eventNum = generateRandomNumber(marker);
-		event = (char *) &eventNum;
 
 		// sending event msg
 		msg.mtype = sendMtype;
-		msg.event = eventNum;
+		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 		cout << "sender257: " << "event sent" << endl;
 
@@ -57,7 +55,7 @@ int main() {
 		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // reading
   
 
-		if(msg.event == -2){
+		if(atol(msg.event) == -2){
 			break;
 		}
 

@@ -12,6 +12,7 @@ terminates when both senders have terminated
 #include <unistd.h>
 #include <sys/wait.h>
 #include <cstdlib>
+#include <cstdio>
 #include "msgbuf.h"
 using namespace std;
 
@@ -40,16 +41,17 @@ int main() {
 
 	do{
 		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // read mesg
-		cout << getpid() << ": gets message" << endl;
+		cout << "receiver2"<< ": gets message" << endl;
 		cout << "event: " << msg.event<< endl;
 		msgCount++;
 
-		checkForDeath(isSender997Alive,isReceiver1Alive, msg.event);
+		checkForDeath(isSender997Alive,isReceiver1Alive, atol(msg.event));
 
 		//last iteration or two. Warn receiver(s) of impending death
 		if((isSender997Alive && (msgCount == 4999)) || msgCount == 5000){
 			cout << "I'm dying" << endl;
-			msg.event = -2;
+			long eventNum = -2;
+			sprintf(msg.event, "%ld", eventNum);
 		}
 
 		msg.mtype = sendMtype;
@@ -82,7 +84,8 @@ otherwise informs receiver 1 of death */
 void death(bool isReceiver1Alive, buf& msg, int qid, int size){
 	if(isReceiver1Alive){
 		msg.mtype = 1;
-		msg.event = -2;
+		long eventNum = -2;
+		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 	}
 	else{

@@ -1,7 +1,7 @@
 // declare my message buffer
 	struct buf {
 		long mtype; 
-		long event;
+		char event[50];
 	};
 
 	buf msg;

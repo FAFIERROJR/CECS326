@@ -14,7 +14,7 @@ terminates when after it sends a num < 100
 #include <sys/wait.h>
 #include <cstdlib>
 #include <ctime>
-#include <cstdlib>
+#include <cstdio>
 #include "msgbuf.h"
 using namespace std;
 
@@ -61,7 +61,7 @@ int main() {
 			msg.mtype = mtype;
 
 			// sending event msg
-			msg.event = eventNum;
+			sprintf(msg.event, "%ld", eventNum);
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 			cout << "sender997: " << "event sent" << endl;
 
@@ -72,7 +72,7 @@ int main() {
 			cout << "sender997" << ": ack received" << endl;
 			cout << "event recipient: " << "receiver " << mtype/2 << endl;
 
-			if(msg.event == -2){
+			if(atol(msg.event) == -2){
 				setAliveFlag(isAlive, mtype);
 				cout << "sender2 died" << endl;
 			}

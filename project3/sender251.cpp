@@ -14,7 +14,7 @@ terminates when after it sends a num < 100
 #include <sys/wait.h>
 #include <cstdlib>
 #include <ctime>
-#include <cstdlib>
+#include <cstdio>
 #include "get_info.h"
 #include "msgbuf.h"
 using namespace std;
@@ -26,7 +26,6 @@ int main() {
 	//declare existence flag
 	bool isAlive;
 
-	char * event;
 	long eventNum = 0;
 
 	//receiving mtype
@@ -46,22 +45,19 @@ int main() {
 
 	//send death signal
 	msg.mtype = 1;
-	msg.event = -1;
-	get_info(qid, (struct msgbuf *)&msg, size, 0);
+	eventNum = -1;
+	sprintf(msg.event, "%ld", eventNum);
+	get_info(qid, (struct msgbuf *)&msg, size, 1);
 
 	while(true){
 		
 		eventNum = generateRandomNumber(marker);
-		event = (char *) &eventNum;
 
 		// sending event msg
 		msg.mtype = sendMtype;
-		msg.event = eventNum;
+		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-		cout << "sender251: " << "event sent" << endl;
-
-		//checking existence
-		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // reading
+		cout << getpid() << "(sender251): " << "event sent" << endl;
 	}
 
 	cout << getpid() << ": now exits" << endl;

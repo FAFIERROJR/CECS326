@@ -12,11 +12,12 @@ terminates when both senders have terminated
 #include <unistd.h>
 #include <sys/wait.h>
 #include <cstdlib>
+#include <cstdio>
 #include "msgbuf.h"
 using namespace std;
 
 //method declarations
-void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isRcv2Alive, long event);
+void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event);
 bool areAllDead(bool isSender997Alive, bool isSender251Alive, bool isRcv2Alive);
 void death(bool isReceiver1Alive, buf& msg, int qid, int size);
 
@@ -24,7 +25,7 @@ int main() {
 	//declare sender existence flags, init to true
 	bool isSender997Alive = true;
 	bool isSender251Alive = true;
-	bool isRcv2Alive = true;
+	bool isReceiver2Alive = true;
 
 	//receiving mtype
 	long mtype = 1;
@@ -40,10 +41,13 @@ int main() {
 	do{
 		
 		msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // read mesg
-		cout << getpid() << ": gets message" << endl;
+		cout << "receiver1"<< ": gets message" << endl;
 		cout << "event: " << msg.event << endl;
 
-		if(msg.event == -2 || msg.event == -1){
+
+		checkForDeath(isSender997Alive, isSender251Alive, isReceiver2Alive, atol(msg.event));
+
+		if(atol(msg.event) == -2 || atol(msg.event) == -1 || atol(msg.event) % 251 == 0){
 			continue;
 		}
 
@@ -51,22 +55,21 @@ int main() {
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 	}while (isSender997Alive || isSender251Alive);
 
-	death(isRcv2Alive, msg, qid, size);
+	death(isReceiver2Alive, msg, qid, size);
 
 	exit(0);
 }
 
-
 /*checkForDeath()
 checks to see if one of its senders or receiver 2 died
 sets appropriate flag */
-void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isRcv2Alive, long event){
+void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event){
 	if(event < 100 && event >= 0){
 		isSender997Alive = false;
 	}
 
 	if(event == -2){
-		isRcv2Alive = false;
+		isReceiver2Alive = false;
 	}
 
 	if(event == -1){
@@ -90,7 +93,8 @@ otherwise informs receiver 2 of death */
 void death(bool isReceiver2Alive, buf& msg, int qid, int size){
 	if(isReceiver2Alive){
 		msg.mtype = 3;
-		msg.event = -1;
+		long eventNum = -1;
+		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 	}
 	else{
