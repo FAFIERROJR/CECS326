@@ -18,7 +18,7 @@ using namespace std;
 
 //method declarations
 void death(bool isReceiver1Alive, buf& msg, int qid, int size);
-void checkForDeath(bool& isSender997Alive, bool& isRcv1Alive, long event);
+bool checkForDeath(bool& isSender997Alive, bool& isRcv1Alive, long event);
 
 int main() {
 	//declare sender existence flags, init to true
@@ -45,7 +45,16 @@ int main() {
 		cout << "event: " << msg.event<< endl;
 		msgCount++;
 
-		checkForDeath(isSender997Alive,isReceiver1Alive, atol(msg.event));
+		long eventReceived = atol(msg.event);
+
+		checkForDeath(isSender997Alive,isReceiver1Alive, eventReceived);
+
+		//do not count receiver1's death signal as message
+		//do not reply to receiver 1
+		if(eventReceived == -1){
+			msgCount -= 1;
+			continue;
+		}
 
 		//last iteration or two. Warn receiver(s) of impending death
 		if((isSender997Alive && (msgCount == 4999)) || msgCount == 5000){
@@ -68,14 +77,17 @@ int main() {
 /*checkForDeath()
 checks to see if one of its senders or receiver 2 died
 sets appropriate flag */
-void checkForDeath(bool& isSender997Alive, bool& isReceiver1Alive, long event){
-	if(event < 100 && event >= 0){
+bool checkForDeath(bool& isSender997Alive, bool& isReceiver1Alive, long event){
+	if(event == -3){
 		isSender997Alive = false;
+		return true;
 	}
 
 	if(event == -1){
 		isReceiver1Alive= false;
+		return true;
 	}
+	return false;
 }
 
 /*death()

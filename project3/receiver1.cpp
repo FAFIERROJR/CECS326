@@ -17,7 +17,7 @@ terminates when both senders have terminated
 using namespace std;
 
 //method declarations
-void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event);
+bool checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event);
 bool areAllDead(bool isSender997Alive, bool isSender251Alive, bool isRcv2Alive);
 void death(bool isReceiver1Alive, buf& msg, int qid, int size);
 
@@ -44,10 +44,13 @@ int main() {
 		cout << "receiver1"<< ": gets message" << endl;
 		cout << "event: " << msg.event << endl;
 
+		long eventReceived = atol(msg.event);
 
-		checkForDeath(isSender997Alive, isSender251Alive, isReceiver2Alive, atol(msg.event));
+		checkForDeath(isSender997Alive, isSender251Alive, isReceiver2Alive, eventReceived);
 
-		if(atol(msg.event) == -2 || atol(msg.event) == -1 || atol(msg.event) % 251 == 0){
+		//do not send message if receiving from 251
+		//or receiving death signal from receiver 2
+		if(eventReceived % 251 == 0 || eventReceived == -2){
 			continue;
 		}
 
@@ -62,19 +65,24 @@ int main() {
 
 /*checkForDeath()
 checks to see if one of its senders or receiver 2 died
-sets appropriate flag */
-void checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event){
-	if(event < 100 && event >= 0){
+sets appropriate flag 
+returns true if death occured */
+bool checkForDeath(bool& isSender997Alive, bool& isSender251Alive, bool& isReceiver2Alive, long event){
+	if(event == -3){
 		isSender997Alive = false;
+		return true;
 	}
 
 	if(event == -2){
 		isReceiver2Alive = false;
+		return true;
 	}
 
 	if(event == -1){
 		isSender251Alive = false;
+		return true;
 	}
+	return false;
 }
 
 /* areAllDead()

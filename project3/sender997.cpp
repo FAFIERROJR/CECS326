@@ -54,6 +54,9 @@ int main() {
 		do{
 		
 			eventNum = generateRandomNumber(marker);
+			if(eventNum < 100){
+				eventNum = -3;
+			}
 
 			//determine whether to send to receiver 1 or receiver2
 			mtype = detMtype(isAlive, didRcv);
@@ -71,8 +74,9 @@ int main() {
 			msgrcv(qid, (struct msgbuf *)&msg, size, mtype, 0); // reading
 			cout << "sender997" << ": ack received" << endl;
 			cout << "event recipient: " << "receiver " << mtype/2 << endl;
+			long eventReceived = atol(msg.event);
 
-			if(atol(msg.event) == -2){
+			if(eventReceived == -2){
 				setAliveFlag(isAlive, mtype);
 				cout << "sender2 died" << endl;
 			}
@@ -112,13 +116,14 @@ generate random number until divisible by marker
 or exit condition */
 long generateRandomNumber(int marker){
 	long event;
-	while(event % marker != 0){
+	while(event % marker != 0 || event % 251 == 0){
 		event = rand();
 
 		//exit condition met
 		if(event < 100){
 			break;
 		}
+
 	}
 	return event;	
 
@@ -128,9 +133,11 @@ long generateRandomNumber(int marker){
 returns true if all existing receivers have received msg
 else returns false */
 bool didAllReceive(bool isAlive[2], bool didRcv[2]){
-	if((isAlive[0] * didRcv[0] + !isAlive[0]) && (isAlive[1] * didRcv[1] + !isAlive[1])){
-		cout << "all received" << endl;
-		return true;
+	if((isAlive[0] && didRcv[0]) || !isAlive[0]){
+		if((isAlive[1] && didRcv[1]) || !isAlive[1]){
+			cout << "all received" << endl;
+			return true;
+		}
 	}
 	return false;
 }

@@ -23,7 +23,7 @@ long generateRandomNumber(int marker);
 
 int main() {
 	//declare existence flag
-	bool isAlive;
+	bool isReceiver2Alive = true; //assume receiver 2 is alive
 
 	long eventNum = 0;
 
@@ -41,7 +41,7 @@ int main() {
 	//set msg size
 	int size = sizeof(msg)-sizeof(long);
 
-	while(true){
+	while(isReceiver2Alive){
 		
 		eventNum = generateRandomNumber(marker);
 
@@ -53,10 +53,10 @@ int main() {
 
 		//checking existence
 		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // reading
-  
+  		long eventReceived = atol(msg.event);
 
-		if(atol(msg.event) == -2){
-			break;
+		if(eventReceived == -2){
+			isReceiver2Alive = false;
 		}
 
 	}

@@ -23,8 +23,6 @@ using namespace std;
 long generateRandomNumber(int marker);
 
 int main() {
-	//declare existence flag
-	bool isAlive;
 
 	long eventNum = 0;
 
@@ -43,11 +41,13 @@ int main() {
 	//set msg size
 	int size = sizeof(msg)-sizeof(long);
 
-	//send death signal
+	//prepare death signal
 	msg.mtype = 1;
 	eventNum = -1;
 	sprintf(msg.event, "%ld", eventNum);
 	get_info(qid, (struct msgbuf *)&msg, size, 1);
+
+	long eventCount = 0;
 
 	while(true){
 		
@@ -57,7 +57,8 @@ int main() {
 		msg.mtype = sendMtype;
 		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-		cout << getpid() << "(sender251): " << "event sent" << endl;
+		eventCount++;
+		cout << getpid() << "(sender251): " << "event " << eventCount << " sent" << endl;
 	}
 
 	cout << getpid() << ": now exits" << endl;
