@@ -30,6 +30,7 @@ int main() {
 	//set mtypes
 	long recMtype = 4;
 	long sendMtype = 3;
+	long sender = 257;
 
 	//seed srand
 	srand(time(NULL));
@@ -39,7 +40,7 @@ int main() {
 
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long);
+	int size = sizeof(msg)-sizeof(long) * 2;
 
 	while(isReceiver2Alive){
 		
@@ -47,6 +48,7 @@ int main() {
 
 		// sending event msg
 		msg.mtype = sendMtype;
+		msg.sender = sender;
 		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 		cout << "sender257: " << "event sent" << endl;

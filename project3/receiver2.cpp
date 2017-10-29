@@ -37,7 +37,7 @@ int main() {
 	buf msg;
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long);
+	int size = sizeof(msg)-sizeof(long) * 2;
 
 	do{
 		msgrcv(qid, (struct msgbuf *)&msg, size, recMtype, 0); // read mesg

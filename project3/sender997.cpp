@@ -40,12 +40,14 @@ int main() {
 	srand(time(NULL));
 	int marker = 997;
 
+	long sender = 997;
+
 	int qid = msgget(ftok(".",'u'), 0);
 
 	buf msg;
 
 	//set msg size
-	int size = sizeof(msg) - sizeof(long);
+	int size = sizeof(msg) - sizeof(long) * 2;
 
 	while(true){
 		//reset flags
@@ -60,6 +62,8 @@ int main() {
 
 			//determine whether to send to receiver 1 or receiver2
 			mtype = detMtype(isAlive, didRcv);
+			//set sender
+			msg.sender = sender;
 			cout << "determined mtype " << mtype << endl;
 			msg.mtype = mtype;
 
@@ -116,7 +120,7 @@ generate random number until divisible by marker
 or exit condition */
 long generateRandomNumber(int marker){
 	long event;
-	while(event % marker != 0 || event % 251 == 0){
+	while(event % marker != 0){
 		event = rand();
 
 		//exit condition met

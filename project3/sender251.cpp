@@ -30,6 +30,8 @@ int main() {
 	long sendMtype = 1;
 	long recMtype = 2;
 
+	long sender = 251;
+
 	//seed srand
 	srand(time(NULL));
 	int marker = 251;
@@ -39,7 +41,7 @@ int main() {
 	buf msg;
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long);
+	int size = sizeof(msg)-sizeof(long)* 2;
 
 	//prepare death signal
 	msg.mtype = 1;
@@ -55,6 +57,7 @@ int main() {
 
 		// sending event msg
 		msg.mtype = sendMtype;
+		msg.sender = sender;
 		sprintf(msg.event, "%ld", eventNum);
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 		eventCount++;

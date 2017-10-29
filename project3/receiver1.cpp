@@ -36,7 +36,7 @@ int main() {
 	buf msg;
 
 	//set msg size
-	int size = sizeof(msg)-sizeof(long);
+	int size = sizeof(msg)-sizeof(long) * 2;
 
 	do{
 		
@@ -50,7 +50,7 @@ int main() {
 
 		//do not send message if receiving from 251
 		//or receiving death signal from receiver 2
-		if(eventReceived % 251 == 0 || eventReceived == -2){
+		if(msg.sender == 251 || eventReceived == -2){
 			continue;
 		}
 
