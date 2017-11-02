@@ -53,12 +53,15 @@ int main() {
 		//reset flags
 		didRcv[0] = false;
 		didRcv[1] = false;
+
+		//find new event
+		eventNum = generateRandomNumber(marker);
+		if(eventNum < 100){
+				eventNum = -3;
+		}
+
 		do{
 		
-			eventNum = generateRandomNumber(marker);
-			if(eventNum < 100){
-				eventNum = -3;
-			}
 
 			//determine whether to send to receiver 1 or receiver2
 			mtype = detMtype(isAlive, didRcv);
