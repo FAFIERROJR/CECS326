@@ -11,6 +11,7 @@ using namespace std;
 //declare methods
 string getReplacementString();
 string getTargetString();
+string wordReplace(string text, string replacement, string target);
 
 int main(){
 
@@ -48,29 +49,34 @@ int main(){
 
 		//skip if you're the parent
 		if(pid == 0){
-			int beginIndex = 0;
-			int endIndex = 0;
 			replacementInstancesCount = 0;
-			string textLeftEnd;
-			string textRightEnd;
-			while(text.find(target) != -1){
-				beginIndex = text.find(target);
-				endIndex = beginIndex + target.length()- 1;
-				textLeftEnd = text.substr(0, beginIndex);
-				textRightEnd = text.substr(endIndex + 1);
-				text = textLeftEnd + replacement + textRightEnd;
-				replacementInstancesCount++;
+			//while there is a word to replace or if non instances were found (bug injection)
+			while(text.find(target) != -1 || replacementInstancesCount == 0){
+
+				//if there are instances, replace
+				if(text.find(target) != -1){
+					text = wordReplace(text, replacement, target);
+					replacementInstancesCount++;
+				}
+
+				//if there were no instances (bug), print "." and pid for killing
+				if(text.find(target) == -1 && replacementInstancesCount == 0){
+					cout << getpid() << ": ." << endl;
+				}
 			}
 
 			cout << text << endl;
 			cout << replacementInstancesCount << " instances of the word " << target << " were replaced by " << replacement << endl;
 		}
 
+		//have parent wait till child is done
 		else if(pid > 0){
 			int status;
 			wait(&status);
   		}
 
+
+  	//only the parent handles UI
 	}while(pid > 0);
 
 	exit(0);
@@ -88,4 +94,20 @@ string getTargetString(){
 	cout << "Enter the target string" << endl;
 	getline(cin, target);
 	return target;
+}
+
+string wordReplace(string text, string replacement, string target){
+	int beginIndex = 0;
+	int endIndex = 0;
+	string textLeftEnd;
+	string textRightEnd;
+
+	beginIndex = text.find(target);
+	endIndex = beginIndex + target.length()- 1;
+	textLeftEnd = text.substr(0, beginIndex);
+	textRightEnd = text.substr(endIndex + 1);
+	text = textLeftEnd + replacement + textRightEnd;
+
+	return text;
+
 }
