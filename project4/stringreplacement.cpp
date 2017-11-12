@@ -82,6 +82,7 @@ int main(){
 	exit(0);
 }
 
+//ask for user to input replacement string
 string getReplacementString(){
 	string replacement;
 	cout << "Enter the replacement string" << endl;
@@ -89,6 +90,7 @@ string getReplacementString(){
 	return replacement;
 }
 
+//ask for user to input target string
 string getTargetString(){
 	string target;
 	cout << "Enter the target string" << endl;
@@ -96,6 +98,7 @@ string getTargetString(){
 	return target;
 }
 
+//replaces a single instance of the target string with replacement
 string wordReplace(string text, string replacement, string target){
 	int beginIndex = 0;
 	int endIndex = 0;
