@@ -22,7 +22,7 @@ int main(){
 
 	//s.erase (std::remove_if(s.begin (), s.end (), ispunct), s.end ());
 
-	string exitString = "lwq";
+	string exitString = "!wq";
 
 
 	int replacementInstancesCount;
